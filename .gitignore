@@ -3,5 +3,4 @@
 __pycache__/
 *.pyc
 backups/
-data/obseques.db
 OBSEQUES_MAKOSSO_TEST*
