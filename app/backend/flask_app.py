@@ -1,4 +1,3 @@
-
 from pathlib import Path
 from datetime import date
 import sqlite3
@@ -7,6 +6,7 @@ import secrets
 import hmac
 
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 
 # ============================================================
@@ -18,6 +18,14 @@ BASE_DIR = Path(__file__).resolve().parents[2]
 DATABASE_PATH = BASE_DIR / "data" / "obseques.db"
 
 app = Flask(__name__)
+
+# ============================================================
+# CORS
+# ============================================================
+# Autorise le frontend Streamlit / autres interfaces
+# à communiquer avec l'API Flask.
+
+CORS(app)
 
 
 # ============================================================
@@ -2154,14 +2162,26 @@ if __name__ == "__main__":
         f"{DATABASE_PATH}"
     )
 
+    # ========================================================
+    # MODIFICATION ETAPE 1
+    # ========================================================
+    # PORT configurable pour le développement local
+    # et pour le déploiement.
+
+    PORT = int(
+        os.getenv(
+            "PORT",
+            "5000"
+        )
+    )
+
     print(
-        "\nServeur : "
-        "http://127.0.0.1:5000"
+        f"\nServeur : "
+        f"http://127.0.0.1:{PORT}"
     )
 
     app.run(
-        host="127.0.0.1",
-        port=5000,
-        debug=True
+        host="0.0.0.0",
+        port=PORT,
+        debug=False
     )
-

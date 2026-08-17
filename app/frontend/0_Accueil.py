@@ -23,7 +23,7 @@ from components import afficher_signature
 # CONFIGURATION
 # ============================================================
 
-API_URL = "http://127.0.0.1:5000"
+API_URL = os.getenv("OBSEQUES_API_URL", "http://127.0.0.1:5000").rstrip("/")
 
 DATE_OBSEQUES = date(
     2026,
