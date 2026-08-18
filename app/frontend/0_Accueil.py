@@ -1,4 +1,3 @@
-
 import sys
 import os
 from pathlib import Path
@@ -24,7 +23,10 @@ from components import afficher_signature
 # CONFIGURATION
 # ============================================================
 
-API_URL = os.getenv("OBSEQUES_API_URL", "http://127.0.0.1:5000").rstrip("/")
+API_URL = os.getenv(
+    "OBSEQUES_API_URL",
+    "http://127.0.0.1:5000"
+).rstrip("/")
 
 DATE_OBSEQUES = date(
     2026,
@@ -114,30 +116,32 @@ def format_fcfa(valeur):
 
 def get_api(endpoint):
 
-    try:
+    url = f"{API_URL}{endpoint}"
 
-        response = requests.get(
-            f"{API_URL}{endpoint}",
-            timeout=5
-        )
+    for tentative in range(1, 4):
 
         try:
 
-            resultat = response.json()
+            response = requests.get(
+                url,
+                timeout=15
+            )
 
-        except ValueError:
+            try:
+                resultat = response.json()
+            except ValueError:
+                resultat = None
 
-            return None
+            if response.ok and resultat is not None:
+                return resultat
 
-        if not response.ok:
+        except requests.exceptions.RequestException:
 
-            return None
+            if tentative < 3:
+                import time
+                time.sleep(3)
 
-        return resultat
-
-    except requests.exceptions.RequestException:
-
-        return None
+    return None
 
 
 # ============================================================
@@ -764,4 +768,3 @@ st.markdown(
 # ============================================================
 
 afficher_signature()
-
